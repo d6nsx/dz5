@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { addTask, setActiveTask, incrementTimeSpent, completeTask, editTask } from '../../store/tasksSlice';
+import { addTask, setActiveTask, incrementTimeSpent, completeTask, pauseTask, resumeTask, editTask } from '../../store/tasksSlice';
 
 const TasksPage = () => {
     const dispatch = useDispatch();
@@ -25,11 +25,23 @@ const TasksPage = () => {
 
     useEffect(() => {
         let interval;
-        if (activeTask) {
+        if (activeTask && tasks.find(task => task.id === activeTask)?.status === 'active') {
             interval = setInterval(() => dispatch(incrementTimeSpent()), 1000);
         }
         return () => clearInterval(interval);
-    }, [activeTask, dispatch]);
+    }, [activeTask, dispatch, tasks]);
+
+    const handleCompleteTask = () => {
+        dispatch(completeTask());
+    };
+
+    const handlePauseTask = () => {
+        dispatch(pauseTask());
+    };
+
+    const handleResumeTask = (taskId) => {
+        dispatch(resumeTask(taskId));
+    };
 
     return (
         <div className="tasksContainer">
@@ -65,9 +77,21 @@ const TasksPage = () => {
                                 <span>Time Spent: {task.timeSpent}s</span>
                                 <span>Status: {task.status}</span>
                             </div>
-                            <button onClick={() => dispatch(setActiveTask(task.id))}>
-                                {activeTask === task.id ? 'Active' : 'Start'}
-                            </button>
+                            {task.status !== 'completed' && task.status !== 'paused' && (
+                                <button
+                                    onClick={() => dispatch(setActiveTask(task.id))}
+                                    disabled={task.status === 'completed'}
+                                >
+                                    {activeTask === task.id ? 'Active' : 'Start'}
+                                </button>
+                            )}
+                            {task.status === 'active' && (
+                                <button onClick={handlePauseTask}>Pause</button>
+                            )}
+                            {task.status === 'paused' && (
+                                <button onClick={() => handleResumeTask(task.id)}>Resume</button>
+                            )}
+
                             <button onClick={() => setEditTaskId(task.id) || setEditTaskTitle(task.title)}>
                                 Edit
                             </button>
@@ -82,7 +106,7 @@ const TasksPage = () => {
                     <div>
                         <p>Task: {tasks.find(task => task.id === activeTask)?.title}</p>
                         <p>Time: {tasks.find(task => task.id === activeTask)?.timeSpent} seconds</p>
-                        <button onClick={() => dispatch(completeTask())}>Pause</button>
+                        <button onClick={handleCompleteTask}>Complete Task</button>
                     </div>
                 </div>
             )}

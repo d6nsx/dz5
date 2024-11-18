@@ -7,10 +7,6 @@ const MainPage = () => {
     const dispatch = useDispatch()
     const { title, inputValue } = useSelector(state => state.titleReducer)
 
-    // const changeTitleFunc = () => {
-    //     dispatch(changeTitle())
-    // }
-
     const changeTitleWithParamsFunc = () => {
         dispatch(changeTitleWithParams(inputValue))
     }
@@ -26,9 +22,6 @@ const MainPage = () => {
             <button onClick={() => dispatch(clearInput())}>clear</button>
             <button onClick={changeTitleWithParamsFunc}>add</button>
             <button onClick={() => dispatch(deleteTitle())}>delete title</button>
-
-            {/* <button onClick={changeTitleFunc}>change title</button>
-            <button onClick={changeTitleWithParamsFunc}>change title with params</button> */}
         </div>
     )
 }
