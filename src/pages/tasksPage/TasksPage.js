@@ -62,8 +62,8 @@ const TasksPage = () => {
                                 ) : (
                                     <strong>{task.title}</strong>
                                 )}
-                                <span> - Time Spent: {task.timeSpent}s</span>
-                                <span> - Status: {task.status}</span>
+                                <span>Time Spent: {task.timeSpent}s</span>
+                                <span>Status: {task.status}</span>
                             </div>
                             <button onClick={() => dispatch(setActiveTask(task.id))}>
                                 {activeTask === task.id ? 'Active' : 'Start'}
